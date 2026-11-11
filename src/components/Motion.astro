@@ -1,0 +1,73 @@
+---
+// Adds scroll-reveal and header-scroll behaviour site-wide. Reveal targets are chosen by
+// selector so pages don't need extra markup; add data-reveal to any element to opt in manually.
+---
+<script>
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Header shadow once the page scrolls
+  const header = document.querySelector('.site-header');
+  const onScroll = () => header?.classList.toggle('scrolled', scrollY > 8);
+  addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  // Groups whose children reveal one after another (staggered)
+  const staggered = ['.grid', '.values', '.pillars', '.contact-grid', '.mission', '.btn-row.reveal-group'];
+  // Single elements that reveal on their own
+  const singles = ['.section-head', '.faq', '.ask', '.tiktok-inner > *', '.layout > *', '.center-cta', '.opening .inner > *'];
+  // Two-column splits slide in from opposite sides
+  const sides = ['.split', '.founder'];
+
+  staggered.forEach((sel) =>
+    document.querySelectorAll(sel).forEach((g) =>
+      [...g.children].forEach((c, i) => {
+        if (!(c as HTMLElement).dataset.reveal) {
+          (c as HTMLElement).dataset.reveal = '';
+          (c as HTMLElement).style.setProperty('--i', String(i % 6));
+        }
+      }),
+    ),
+  );
+  singles.forEach((sel) =>
+    document.querySelectorAll<HTMLElement>(sel).forEach((el, i) => {
+      if (el.closest('[data-reveal]') || el.dataset.reveal !== undefined) return;
+      el.dataset.reveal = '';
+      if (sel === '.faq') el.style.setProperty('--i', String(i % 6));
+    }),
+  );
+  sides.forEach((sel) =>
+    document.querySelectorAll(sel).forEach((g) =>
+      [...g.children].forEach((c, i) => ((c as HTMLElement).dataset.reveal = i === 0 ? 'left' : 'right')),
+    ),
+  );
+
+  const targets = [...document.querySelectorAll<HTMLElement>('[data-reveal]')];
+
+  // Jump straight to the hidden start state (no fade-out flash for already-painted content).
+  targets.forEach((t) => (t.style.transition = 'none'));
+  void document.body.offsetHeight;
+  targets.forEach((t) => t.style.removeProperty('transition'));
+
+  // After an element has finished revealing, drop the reveal hooks so hover transforms work normally.
+  const reveal = (t: HTMLElement) => {
+    t.classList.add('in');
+    const i = Number(t.style.getPropertyValue('--i') || 0);
+    setTimeout(() => {
+      t.removeAttribute('data-reveal');
+      t.classList.remove('in');
+      t.style.removeProperty('--i');
+    }, 800 + i * 90);
+  };
+
+  if (reduce || !('IntersectionObserver' in window)) {
+    targets.forEach((t) => { t.removeAttribute('data-reveal'); t.style.removeProperty('--i'); });
+  } else {
+    const io = new IntersectionObserver(
+      (entries) => entries.forEach((e) => {
+        if (e.isIntersecting) { reveal(e.target as HTMLElement); io.unobserve(e.target); }
+      }),
+      { rootMargin: '0px 0px -8% 0px', threshold: 0.12 },
+    );
+    requestAnimationFrame(() => targets.forEach((t) => io.observe(t)));
+  }
+</script>

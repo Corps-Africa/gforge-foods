@@ -6,9 +6,11 @@ import '@fontsource/inter/500.css';
 import '@fontsource/inter/600.css';
 import '@fontsource/playfair-display/600-italic.css';
 import '../styles/global.css';
+import '../styles/motion.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import WhatsAppFab from '../components/WhatsAppFab.astro';
+import Motion from '../components/Motion.astro';
 import { site, branches } from '../data/site';
 
 interface Props { title?: string; description?: string }
@@ -43,6 +45,7 @@ const schema = {
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <script is:inline>document.documentElement.classList.add('js')</script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
@@ -64,5 +67,6 @@ const schema = {
     <main id="main"><slot /></main>
     <Footer />
     <WhatsAppFab />
+    <Motion />
   </body>
 </html>

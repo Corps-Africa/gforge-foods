@@ -22,7 +22,13 @@ import { site } from '../data/site';
   const el = document.querySelector<HTMLElement>('.countdown');
   if (el) {
     const target = new Date(el.dataset.target!).getTime();
-    const set = (u: string, v: number) => (el.querySelector(`[data-u="${u}"]`)!.textContent = String(v).padStart(2, '0'));
+    const set = (u: string, v: number) => {
+      const b = el.querySelector<HTMLElement>(`[data-u="${u}"]`)!;
+      const txt = String(v).padStart(2, '0');
+      if (b.textContent === txt) return;
+      b.textContent = txt;
+      b.classList.remove('tick'); void b.offsetWidth; b.classList.add('tick');
+    };
     const tick = () => {
       const diff = target - Date.now();
       if (diff <= 0) {

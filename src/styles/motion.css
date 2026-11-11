@@ -1,0 +1,99 @@
+/* ===== G'Forge motion system =====
+   - Scroll reveal: elements matched in Motion.astro get [data-reveal] and fade up when visible.
+   - Only hidden when JS is running (html.js) so content never disappears without JS.
+   - Everything is disabled under prefers-reduced-motion (see bottom + global.css). */
+
+:root {
+  --ease-out: cubic-bezier(.2, .7, .2, 1);
+  --ease-spring: cubic-bezier(.34, 1.56, .64, 1);
+}
+
+/* Scroll reveal */
+.js [data-reveal] {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity .7s var(--ease-out), transform .7s var(--ease-out);
+  transition-delay: calc(var(--i, 0) * 90ms);
+}
+.js [data-reveal='left'] { transform: translateX(-36px); }
+.js [data-reveal='right'] { transform: translateX(36px); }
+.js [data-reveal='zoom'] { transform: scale(.94); }
+.js [data-reveal].in { opacity: 1; transform: none; }
+
+/* Hero entrance (home) */
+@keyframes fade-up { from { opacity: 0; transform: translateY(24px); } to { opacity: 1; transform: none; } }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pop-in { from { opacity: 0; transform: scale(.85); } to { opacity: 1; transform: none; } }
+@keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+@keyframes morph {
+  0%, 100% { border-radius: 42% 58% 55% 45% / 50% 40% 60% 50%; transform: rotate(0deg); }
+  50% { border-radius: 55% 45% 40% 60% / 45% 58% 42% 55%; transform: rotate(8deg); }
+}
+@keyframes pulse-ring {
+  0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, .55), 0 8px 24px rgba(0,0,0,.2); }
+  70%, 100% { box-shadow: 0 0 0 18px rgba(37, 211, 102, 0), 0 8px 24px rgba(0,0,0,.2); }
+}
+@keyframes slide-down { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: none; } }
+
+.hero-text > * { animation: fade-up .8s var(--ease-out) both; }
+.hero-text > :nth-child(1) { animation-delay: .05s; }
+.hero-text > :nth-child(2) { animation-delay: .15s; }
+.hero-text > :nth-child(3) { animation-delay: .28s; }
+.hero-text > :nth-child(4) { animation-delay: .4s; }
+.hero-text > :nth-child(5) { animation-delay: .52s; }
+.hero-photo { animation: pop-in .9s .2s var(--ease-spring) both; }
+.blob { animation: fade-in .8s .1s both, morph 12s 1s ease-in-out infinite; }
+.float-card { animation: pop-in .6s .8s var(--ease-spring) both, float 5s 1.5s ease-in-out infinite; }
+
+/* Inner page heroes */
+.page-hero .wrap > * { animation: fade-up .7s var(--ease-out) both; }
+.page-hero .wrap > :nth-child(2) { animation-delay: .1s; }
+.page-hero .wrap > :nth-child(3) { animation-delay: .2s; }
+.overlay .wrap > * { animation: fade-up .8s .15s var(--ease-out) both; }
+.overlay .wrap > :nth-child(2) { animation-delay: .3s; }
+
+/* Buttons */
+.btn { transition: background-color .2s, color .2s, border-color .2s, transform .2s var(--ease-out), box-shadow .2s; }
+.btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(27, 67, 50, .18); }
+.btn:active { transform: translateY(0); box-shadow: none; }
+.btn svg:last-child:not(:first-child) { transition: transform .2s var(--ease-out); }
+.btn:hover svg:last-child:not(:first-child) { transform: translateX(4px); }
+
+/* Cards: lift + photo zoom */
+.card { transition: transform .3s var(--ease-out), box-shadow .3s var(--ease-out); }
+.menu-card:hover, .branch:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+.menu-card .media { overflow: hidden; }
+.menu-card .photo { transition: transform .6s var(--ease-out); }
+.menu-card:hover .photo { transform: scale(1.06); }
+.value, .pillar { transition: transform .3s var(--ease-out), box-shadow .3s, border-color .3s; }
+.value:hover, .pillar:hover { transform: translateY(-4px); box-shadow: var(--shadow); border-color: transparent; }
+.v-icon, .p-icon, .c-icon { transition: transform .4s var(--ease-spring); }
+.value:hover .v-icon, .pillar:hover .p-icon, .c-card:hover .c-icon { transform: rotate(-8deg) scale(1.1); }
+
+/* Header shadow once scrolled */
+.site-header { transition: box-shadow .3s, background-color .3s; }
+.site-header.scrolled { box-shadow: 0 6px 20px rgba(27, 67, 50, .08); }
+.nav a:not(.btn) { transition: background-color .2s, color .2s; }
+.site-header.open .nav { animation: slide-down .3s var(--ease-out); }
+
+/* WhatsApp floating button: gentle pulse */
+.wa-fab { animation: pop-in .5s 1s var(--ease-spring) both, pulse-ring 2.4s 2s ease-out infinite; transition: transform .2s var(--ease-out), background-color .2s; }
+.wa-fab:hover { transform: scale(1.05); }
+
+/* Menu tabs & FAQ */
+[role='tabpanel']:not([hidden]) { animation: fade-in .35s ease both; }
+.tabs button { transition: background-color .2s, color .2s, border-color .2s, transform .2s; }
+.tabs button:active { transform: scale(.96); }
+.qty button { transition: background-color .15s, transform .15s; }
+.qty button:active { transform: scale(.85); }
+.faq summary::after { transition: transform .3s var(--ease-out), background-color .2s; }
+.faq[open] summary::after { transform: translateY(-50%) rotate(180deg); }
+.faq[open] p { animation: slide-down .3s var(--ease-out); }
+
+/* Countdown number tick */
+@keyframes tick { from { transform: translateY(-30%); opacity: 0; } to { transform: none; opacity: 1; } }
+.countdown b.tick { animation: tick .4s var(--ease-out); }
+
+@media (prefers-reduced-motion: reduce) {
+  .js [data-reveal] { opacity: 1; transform: none; }
+}
