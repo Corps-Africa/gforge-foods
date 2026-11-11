@@ -1,0 +1,73 @@
+---
+import Base from '../layouts/Base.astro';
+import Icon from '../components/Icon.astro';
+import { faqs, testimonials } from '../data/content';
+import { whatsappLink } from '../data/site';
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+};
+---
+<Base title="FAQ & Reviews" description="Answers to common questions about ordering, locations, catering and food safety at G'Forge Foods, Techiman.">
+  <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  <section class="page-hero">
+    <div class="wrap">
+      <span class="eyebrow">Help</span>
+      <h1>Frequently asked questions</h1>
+      <p>Can't find your answer? Message us on WhatsApp and we'll reply quickly.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap narrow">
+      {faqs.map((f, i) => (
+        <details class="faq" open={i === 0}>
+          <summary>{f.q}</summary>
+          <p>{f.a}</p>
+        </details>
+      ))}
+      <div class="ask">
+        <p><strong>Still have a question?</strong></p>
+        <a class="btn btn--whatsapp" href={whatsappLink("Hello G'Forge Foods! I have a question:")} target="_blank" rel="noopener"><Icon name="whatsapp" /> Ask us on WhatsApp</a>
+      </div>
+    </div>
+  </section>
+
+  {testimonials.length > 0 && (
+    <section class="section section--white" id="reviews">
+      <div class="wrap">
+        <div class="section-head center"><span class="eyebrow">Reviews</span><h2>What our customers say</h2></div>
+        <div class="grid grid-3">
+          {testimonials.map((t) => (
+            <figure class="card card-body">
+              <blockquote>“{t.quote}”</blockquote>
+              <figcaption><strong>{t.name}</strong>{t.detail && <span> · {t.detail}</span>}</figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+</Base>
+
+<style>
+  .narrow { max-width: 780px; }
+  .faq { background: var(--white); border-radius: var(--radius-sm); box-shadow: var(--shadow); margin-bottom: 12px; }
+  .faq summary {
+    list-style: none; cursor: pointer; padding: 18px 52px 18px 20px; position: relative;
+    font-family: var(--font-head); font-weight: 700; color: var(--green); font-size: 1.05rem;
+  }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq summary::after {
+    content: '+'; position: absolute; right: 18px; top: 50%; transform: translateY(-50%);
+    width: 28px; height: 28px; border-radius: 50%; background: var(--green-50); color: var(--orange);
+    display: grid; place-items: center; font-size: 1.3rem; font-weight: 700;
+  }
+  .faq[open] summary::after { content: '−'; }
+  .faq p { padding: 0 20px 20px; margin: 0; color: var(--muted); }
+  .ask { text-align: center; margin-top: 40px; }
+  blockquote { margin: 0 0 12px; }
+  figcaption { color: var(--muted); font-size: .9rem; }
+</style>

@@ -1,0 +1,68 @@
+---
+import '@fontsource/montserrat/700.css';
+import '@fontsource/montserrat/800.css';
+import '@fontsource/inter/400.css';
+import '@fontsource/inter/500.css';
+import '@fontsource/inter/600.css';
+import '@fontsource/playfair-display/600-italic.css';
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import WhatsAppFab from '../components/WhatsAppFab.astro';
+import { site, branches } from '../data/site';
+
+interface Props { title?: string; description?: string }
+const { title, description = site.description } = Astro.props;
+const fullTitle = title ? `${title} | ${site.name} Techiman` : `${site.name} | Best Pizza, Jollof & Pastries in Techiman`;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+
+const schema = {
+  '@context': 'https://schema.org',
+  '@graph': branches.map((b) => ({
+    '@type': 'Restaurant',
+    '@id': `${Astro.site}#${b.id}`,
+    name: `${site.name} – ${b.name}`,
+    slogan: site.slogan,
+    servesCuisine: ['Ghanaian', 'Pizza', 'Fast Food', 'Pastries'],
+    priceRange: '₵',
+    telephone: site.phones.map((p) => `+233${p.slice(1)}`),
+    email: site.email,
+    url: Astro.site?.toString(),
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: b.address,
+      addressLocality: 'Techiman',
+      addressRegion: 'Bono East',
+      addressCountry: 'GH',
+    },
+    sameAs: [site.tiktok],
+  })),
+};
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content="#1B4332" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content="en_GH" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+  </head>
+  <body>
+    <a class="visually-hidden skip" href="#main">Skip to content</a>
+    <Header />
+    <main id="main"><slot /></main>
+    <Footer />
+    <WhatsAppFab />
+  </body>
+</html>

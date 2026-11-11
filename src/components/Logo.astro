@@ -1,0 +1,29 @@
+---
+// Uses the official logo at src/assets/brand/logo.(png|webp|svg) once supplied;
+// until then shows a text wordmark in brand colours.
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props { height?: number; light?: boolean }
+const { height = 48, light = false } = Astro.props;
+const files = import.meta.glob<{ default: ImageMetadata }>('../assets/brand/logo.{png,webp,svg,jpg}', { eager: true });
+const logo = Object.values(files)[0]?.default;
+---
+{logo ? (
+  <Image src={logo} alt="G'Forge Foods" height={height} loading="eager" class="logo-img" style={`height:${height}px;width:auto`} />
+) : (
+  <span class:list={['wordmark', { light }]} style={`--h:${height}px`}>
+    <span class="g">G'Forge</span><span class="f">FOODS</span>
+  </span>
+)}
+
+<style>
+  .wordmark { display: inline-flex; flex-direction: column; line-height: 1; font-family: var(--font-head); }
+  .g {
+    font-weight: 800; font-size: calc(var(--h) * .5);
+    background: linear-gradient(90deg, var(--orange), var(--gold));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .f { font-weight: 700; font-size: calc(var(--h) * .22); letter-spacing: .35em; color: var(--green-700); margin-top: 2px; }
+  .light .f { color: #b7e4c7; }
+</style>

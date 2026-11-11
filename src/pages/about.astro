@@ -1,0 +1,107 @@
+---
+import Base from '../layouts/Base.astro';
+import Photo from '../components/Photo.astro';
+import Icon from '../components/Icon.astro';
+
+const pillars = [
+  { icon: 'shield', title: 'Food safety', text: 'Every meal is prepared hygienically, with careful handling, clean kitchens and a team trained to keep standards high.' },
+  { icon: 'leaf', title: 'Healthy eating', text: 'We believe good food should also be good for you: nutritious, balanced and made with fresh ingredients.' },
+  { icon: 'users', title: 'Youth empowerment', text: 'We equip young people with practical food production and entrepreneurial skills they can build careers on.' },
+  { icon: 'heart', title: 'Community jobs', text: 'As we grow into more locations, we create employment opportunities right here in our community.' },
+] as const;
+---
+<Base title="About Us" description="The story behind G'Forge Foods in Techiman: safe, affordable, nutritious food, youth empowerment and community jobs. Forging Healthy Futures.">
+  <section class="about-hero">
+    <Photo name="storefront" alt="G'Forge Foods Sansama Road storefront and dining area" width={1600} aspect="16 / 7" eager />
+    <div class="overlay">
+      <div class="wrap">
+        <span class="eyebrow">About G'Forge Foods</span>
+        <h1>Good food. Safe food. <span class="accent">A healthier future.</span></h1>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap split">
+      <div>
+        <span class="eyebrow">Our story</span>
+        <h2>From one kitchen in Techiman to a growing brand</h2>
+        <p>G'Forge Foods is a food and pastry business on a simple mission: to make safe, quality food accessible to everyone. From our first location on Dagomba Line, we've served individuals, families, students, workers, businesses and event organisers who want food they can enjoy and trust.</p>
+        <p>On <strong>1 December 2026</strong> we open our second home, a mini-restaurant and snack bar on Sansama Road at the Fanmilk Building, bringing G'Forge closer to even more of Techiman.</p>
+      </div>
+      <Photo name="interior" alt="Inside G'Forge Foods: modern dining seating and clean service counter" width={720} class="rounded" />
+    </div>
+  </section>
+
+  <section class="section section--green">
+    <div class="wrap mission">
+      <div>
+        <span class="eyebrow">Our mission</span>
+        <p class="big">To provide delicious, affordable, nutritious and hygienically prepared meals, snacks, pastries and beverages, while promoting healthy eating, food safety and excellent customer service.</p>
+      </div>
+      <div>
+        <span class="eyebrow">Our vision</span>
+        <p class="big accent vision">Forging Healthy Futures.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--white">
+    <div class="wrap">
+      <div class="section-head center">
+        <span class="eyebrow">What we stand for</span>
+        <h2>Beyond the plate</h2>
+      </div>
+      <div class="pillars">
+        {pillars.map((p) => (
+          <div class="pillar">
+            <span class="p-icon"><Icon name={p.icon} /></span>
+            <div><h3>{p.title}</h3><p>{p.text}</p></div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap founder">
+      <Photo name="founder" alt="Grace Maabo, Founder of G'Forge Foods" width={480} aspect="1 / 1" class="founder-photo" />
+      <div>
+        <span class="eyebrow">Leadership</span>
+        <h2>Grace Maabo</h2>
+        <p class="role">Founder</p>
+        <p>Grace founded G'Forge Foods to build a food brand Techiman can trust, one that pairs great taste with high hygiene standards and creates real opportunities for young people.</p>
+        <a class="btn btn--primary" href="/contact/">Get in touch <Icon name="arrow" /></a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .about-hero { position: relative; background: var(--green); }
+  .about-hero :global(.photo) { min-height: 340px; max-height: 560px; }
+  .overlay {
+    position: absolute; inset: 0; display: flex; align-items: flex-end; padding-bottom: 40px;
+    background: linear-gradient(to top, rgba(27,67,50,.92) 10%, rgba(27,67,50,.15) 70%);
+  }
+  .overlay h1 { color: #fff; max-width: 18ch; margin: 0; }
+  .overlay .accent { color: var(--gold); }
+  .split { display: grid; gap: 32px; align-items: center; }
+  @media (min-width: 860px) { .split { grid-template-columns: 1.1fr 1fr; gap: 56px; } }
+  .split :global(.rounded) { border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+  .mission { display: grid; gap: 32px; }
+  @media (min-width: 860px) { .mission { grid-template-columns: 1.6fr 1fr; gap: 56px; } }
+  .mission .eyebrow { color: var(--gold); }
+  .big { font-size: clamp(1.15rem, 2.4vw, 1.45rem); line-height: 1.5; color: #fff; margin: 0; }
+  .vision { font-size: clamp(1.8rem, 4vw, 2.6rem); color: var(--gold); line-height: 1.2; }
+  .pillars { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 420px), 1fr)); }
+  .pillar { display: flex; gap: 18px; padding: 24px; background: var(--cream); border-radius: var(--radius); border: 1px solid var(--line); }
+  .pillar p { margin: 0; color: var(--muted); }
+  .p-icon { flex: none; display: grid; place-items: center; width: 52px; height: 52px; border-radius: 14px; background: var(--orange); color: #fff; }
+  .p-icon :global(svg) { width: 26px; height: 26px; }
+  .founder { display: grid; gap: 32px; align-items: center; }
+  @media (min-width: 760px) { .founder { grid-template-columns: 320px 1fr; gap: 56px; } }
+  .founder :global(.founder-photo) { border-radius: 50%; overflow: hidden; max-width: 320px; box-shadow: var(--shadow-lg); border: 6px solid #fff; }
+  .founder h2 { margin-bottom: 0; }
+  .role { color: var(--orange); font-family: var(--font-head); font-weight: 700; }
+</style>

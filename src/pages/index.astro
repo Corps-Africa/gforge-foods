@@ -1,0 +1,173 @@
+---
+import Base from '../layouts/Base.astro';
+import Photo from '../components/Photo.astro';
+import Icon from '../components/Icon.astro';
+import MenuCard from '../components/MenuCard.astro';
+import OpeningBanner from '../components/OpeningBanner.astro';
+import BranchCard from '../components/BranchCard.astro';
+import { site, branches, whatsappLink } from '../data/site';
+import { bestSellers } from '../data/menu';
+import { testimonials } from '../data/content';
+
+const values = [
+  { icon: 'shield', title: 'Hygienically prepared', text: 'Food safety comes first: clean kitchens, careful handling and a trained team.' },
+  { icon: 'leaf', title: 'Fresh & nutritious', text: 'Wholesome ingredients and balanced meals that taste great and do you good.' },
+  { icon: 'heart', title: 'Affordable every day', text: 'Quality food at prices that work for students, workers and families.' },
+  { icon: 'users', title: 'Empowering youth', text: 'We train young people in food production and entrepreneurship.' },
+] as const;
+---
+<Base>
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div class="hero-text">
+        <span class="eyebrow">Food &amp; pastries · Techiman</span>
+        <h1>Forging <span class="hl">Healthy</span> Futures.</h1>
+        <p class="lead">Delicious, affordable and hygienically prepared meals, pizzas, pastries and fresh drinks, made with care in Techiman.</p>
+        <div class="btn-row">
+          <a class="btn btn--whatsapp" href={whatsappLink()} target="_blank" rel="noopener"><Icon name="whatsapp" /> Order via WhatsApp</a>
+          <a class="btn btn--outline" href="/menu/">View Menu</a>
+        </div>
+        <ul class="hero-facts">
+          <li><Icon name="pin" /> Dagomba Line &amp; Sansama Road</li>
+          <li><Icon name="phone" /> 024 724 9385</li>
+        </ul>
+      </div>
+      <div class="hero-media">
+        <div class="blob"></div>
+        <div class="hero-photo"><Photo name="hero" alt="G'Forge Foods signature pizza and meals" width={720} aspect="1 / 1" eager /></div>
+        <div class="float-card">
+          <span class="accent">Cravings satisfied,</span>
+          <strong>every day!</strong>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head center">
+        <span class="eyebrow">Customer favourites</span>
+        <h2>Our best-sellers</h2>
+        <p class="lead">The dishes Techiman keeps coming back for. Pick a quantity and send your order straight to WhatsApp.</p>
+      </div>
+      <div class="grid grid-3">
+        {bestSellers.map((item) => <MenuCard item={item} />)}
+      </div>
+      <p class="center-cta"><a class="btn btn--primary" href="/menu/">See the full menu <Icon name="arrow" /></a></p>
+    </div>
+  </section>
+
+  <OpeningBanner />
+
+  <section class="section section--white">
+    <div class="wrap">
+      <div class="section-head center">
+        <span class="eyebrow">Why G'Forge</span>
+        <h2>More than good food</h2>
+      </div>
+      <div class="values">
+        {values.map((v) => (
+          <div class="value">
+            <span class="v-icon"><Icon name={v.icon} /></span>
+            <h3>{v.title}</h3>
+            <p>{v.text}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap split">
+      <Photo name="catering" alt="G'Forge Foods catering spread" width={720} aspect="4 / 3" class="rounded" />
+      <div>
+        <span class="eyebrow">Events &amp; bulk orders</span>
+        <h2>Feeding your next celebration</h2>
+        <p class="lead">Birthdays, office lunches, church and school events: we cater meals, pizzas, pastries, custom cakes and drinks for groups of any size.</p>
+        <a class="btn btn--primary" href="/catering/">Request a catering quote <Icon name="arrow" /></a>
+      </div>
+    </div>
+  </section>
+
+  {testimonials.length > 0 && (
+    <section class="section section--white">
+      <div class="wrap">
+        <div class="section-head center"><span class="eyebrow">Reviews</span><h2>What our customers say</h2></div>
+        <div class="grid grid-3">
+          {testimonials.slice(0, 3).map((t) => (
+            <figure class="card card-body quote">
+              <blockquote>“{t.quote}”</blockquote>
+              <figcaption><strong>{t.name}</strong>{t.detail && <span> · {t.detail}</span>}</figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section class="section section--green">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="eyebrow">Find us</span>
+        <h2>Two locations in Techiman</h2>
+      </div>
+      <div class="grid grid-2">
+        {branches.map((b) => <BranchCard branch={b} />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section tiktok">
+    <div class="wrap tiktok-inner">
+      <div>
+        <span class="eyebrow">Follow the flavour</span>
+        <h2>See what's cooking on TikTok</h2>
+        <p class="lead">Fresh-from-the-kitchen videos, new treats and promos. Follow <strong>{site.tiktokHandle}</strong>.</p>
+      </div>
+      <a class="btn btn--primary" href={site.tiktok} target="_blank" rel="noopener"><Icon name="tiktok" /> Follow {site.tiktokHandle}</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .hero { padding: 40px 0 56px; overflow: hidden; }
+  .hero-grid { display: grid; gap: 40px; align-items: center; }
+  @media (min-width: 900px) { .hero { padding: 72px 0 88px; } .hero-grid { grid-template-columns: 1.1fr 1fr; } }
+  .hl { color: var(--orange); }
+  .hero-text .lead { margin-bottom: 28px; }
+  .hero-facts { list-style: none; padding: 0; margin: 24px 0 0; display: flex; flex-wrap: wrap; gap: 8px 20px; color: var(--muted); font-size: .95rem; }
+  .hero-facts li { display: inline-flex; align-items: center; gap: 6px; }
+  .hero-facts :global(svg) { width: 18px; height: 18px; color: var(--orange); }
+  .hero-media { position: relative; max-width: 520px; margin: 0 auto; width: 100%; }
+  .blob {
+    position: absolute; inset: 4% -4% -2% 8%; border-radius: 42% 58% 55% 45% / 50% 40% 60% 50%;
+    background: linear-gradient(135deg, var(--gold), var(--orange));
+  }
+  .hero-photo { position: relative; border-radius: 50%; overflow: hidden; border: 8px solid var(--white); box-shadow: var(--shadow-lg); }
+  .float-card {
+    position: absolute; left: -4px; bottom: 6%; background: var(--white); border-radius: var(--radius);
+    padding: 12px 18px; box-shadow: var(--shadow-lg); display: grid; line-height: 1.2;
+  }
+  .float-card .accent { color: var(--orange); }
+  .float-card strong { font-family: var(--font-head); color: var(--green); font-size: 1.15rem; }
+
+  .center-cta { text-align: center; margin: 36px 0 0; }
+
+  .values { display: grid; gap: 20px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr)); }
+  .value { padding: 24px; border-radius: var(--radius); background: var(--cream); border: 1px solid var(--line); }
+  .value p { color: var(--muted); margin: 0; font-size: .95rem; }
+  .v-icon { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 14px; background: var(--green); color: var(--gold); margin-bottom: 14px; }
+  .v-icon :global(svg) { width: 26px; height: 26px; }
+
+  .split { display: grid; gap: 32px; align-items: center; }
+  @media (min-width: 860px) { .split { grid-template-columns: 1fr 1fr; gap: 56px; } }
+  .split :global(.rounded) { border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+
+  .quote blockquote { margin: 0 0 12px; font-size: 1.05rem; }
+  .quote figcaption { color: var(--muted); font-size: .9rem; }
+
+  .tiktok-inner { display: flex; flex-wrap: wrap; gap: 24px; align-items: center; justify-content: space-between; }
+  .tiktok-inner > div { max-width: 640px; }
+  .tiktok-inner h2 { margin-bottom: .3em; }
+  .tiktok-inner .lead { margin: 0; }
+</style>

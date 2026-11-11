@@ -1,0 +1,61 @@
+---
+import { site } from '../data/site';
+---
+<section class="opening" aria-labelledby="opening-title">
+  <div class="wrap inner">
+    <div class="text">
+      <span class="badge">Grand opening · 1 December 2026</span>
+      <h2 id="opening-title">Our new branch is opening on Sansama Road!</h2>
+      <p class="accent tag">Same Great Taste… Now Closer to You!</p>
+      <p>A brand-new mini-restaurant &amp; snack bar at the Fanmilk Building, near Executive Pub, Techiman.</p>
+    </div>
+    <div class="countdown" data-target={site.grandOpening} aria-live="polite">
+      <div><b data-u="d">--</b><span>Days</span></div>
+      <div><b data-u="h">--</b><span>Hours</span></div>
+      <div><b data-u="m">--</b><span>Mins</span></div>
+      <p class="open-now" hidden>We're open — come visit!</p>
+    </div>
+  </div>
+</section>
+
+<script>
+  const el = document.querySelector<HTMLElement>('.countdown');
+  if (el) {
+    const target = new Date(el.dataset.target!).getTime();
+    const set = (u: string, v: number) => (el.querySelector(`[data-u="${u}"]`)!.textContent = String(v).padStart(2, '0'));
+    const tick = () => {
+      const diff = target - Date.now();
+      if (diff <= 0) {
+        el.querySelectorAll('div').forEach((d) => (d.hidden = true));
+        el.querySelector<HTMLElement>('.open-now')!.hidden = false;
+        return;
+      }
+      set('d', Math.floor(diff / 864e5));
+      set('h', Math.floor((diff / 36e5) % 24));
+      set('m', Math.floor((diff / 6e4) % 60));
+      setTimeout(tick, 30_000);
+    };
+    tick();
+  }
+</script>
+
+<style>
+  .opening { background: var(--maroon); color: #f6e7ea; padding: 48px 0; position: relative; overflow: hidden; }
+  .opening::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(circle at 90% 10%, rgba(255,183,3,.25), transparent 40%);
+  }
+  .inner { position: relative; display: grid; gap: 28px; align-items: center; }
+  @media (min-width: 860px) { .inner { grid-template-columns: 1.4fr 1fr; } }
+  h2 { color: #fff; margin-top: 14px; }
+  .tag { color: var(--gold); font-size: 1.3rem; margin-bottom: .5em; }
+  .countdown { display: flex; gap: 12px; justify-content: flex-start; }
+  @media (min-width: 860px) { .countdown { justify-content: flex-end; } }
+  .countdown div {
+    background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.2); border-radius: var(--radius);
+    padding: 14px 10px; min-width: 82px; text-align: center;
+  }
+  .countdown b { display: block; font-family: var(--font-head); font-size: 2.2rem; font-weight: 800; color: var(--gold); line-height: 1.1; }
+  .countdown span { font-size: .8rem; text-transform: uppercase; letter-spacing: .08em; }
+  .open-now { font-family: var(--font-head); font-weight: 800; font-size: 1.4rem; color: var(--gold); margin: 0; }
+</style>

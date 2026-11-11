@@ -1,0 +1,66 @@
+---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import { site, branches, nav, telHref, formatPhone, whatsappLink } from '../data/site';
+const year = new Date().getFullYear();
+---
+<footer class="site-footer">
+  <div class="wrap cols">
+    <div>
+      <Logo height={52} light />
+      <p class="slogan accent">{site.slogan}</p>
+      <p>Delicious, affordable, nutritious and hygienically prepared food in Techiman.</p>
+      <div class="social">
+        <a href={site.tiktok} target="_blank" rel="noopener" aria-label="G'Forge Foods on TikTok"><Icon name="tiktok" /></a>
+        <a href={whatsappLink()} target="_blank" rel="noopener" aria-label="Chat on WhatsApp"><Icon name="whatsapp" /></a>
+      </div>
+    </div>
+    <div>
+      <h3>Visit us</h3>
+      {branches.map((b) => (
+        <p><strong>{b.name}{b.isNew && ' · New'}</strong><br />{b.address}</p>
+      ))}
+    </div>
+    <div>
+      <h3>Contact</h3>
+      <ul class="list">
+        {site.phones.map((p) => <li><a href={telHref(p)}><Icon name="phone" /> {formatPhone(p)}</a></li>)}
+        <li><a href={`mailto:${site.email}`}><Icon name="mail" /> {site.email}</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Explore</h3>
+      <ul class="list">
+        {nav.map((n) => <li><a href={n.href}>{n.label}</a></li>)}
+      </ul>
+    </div>
+  </div>
+  <div class="wrap legal">
+    <span>© {year} {site.name}. All rights reserved.</span>
+    <span class="accent">{site.tagline}</span>
+  </div>
+</footer>
+
+<style>
+  .site-footer { background: var(--green); color: #cfe0d5; padding: 56px 0 96px; font-size: .95rem; }
+  .cols { display: grid; gap: 32px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); }
+  .site-footer h3 { color: var(--gold); font-size: 1rem; text-transform: uppercase; letter-spacing: .08em; }
+  .site-footer a { color: #fff; text-decoration: none; }
+  .site-footer a:hover { color: var(--gold); }
+  .slogan { color: var(--gold); font-size: 1.15rem; margin: 12px 0 6px; }
+  .list { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+  .list a { display: inline-flex; align-items: center; gap: 8px; word-break: break-word; }
+  .list :global(svg) { width: 16px; height: 16px; flex: none; }
+  .social { display: flex; gap: 10px; margin-top: 12px; }
+  .social a {
+    display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%;
+    background: rgba(255,255,255,.1);
+  }
+  .social a:hover { background: var(--orange); color: #fff; }
+  .social :global(svg) { width: 20px; height: 20px; }
+  .legal {
+    display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px;
+    border-top: 1px solid rgba(255,255,255,.15); margin-top: 40px; padding-top: 20px; font-size: .85rem;
+  }
+  @media (min-width: 768px) { .site-footer { padding-bottom: 32px; } }
+</style>

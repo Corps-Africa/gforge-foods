@@ -1,0 +1,65 @@
+---
+import Base from '../layouts/Base.astro';
+import BranchCard from '../components/BranchCard.astro';
+import Icon from '../components/Icon.astro';
+import { site, branches, telHref, formatPhone, whatsappLink } from '../data/site';
+---
+<Base title="Locations & Contact" description="Find G'Forge Foods in Techiman: Dagomba Line and the new Sansama Road branch at the Fanmilk Building. Call 024 724 9385 or order on WhatsApp.">
+  <section class="page-hero">
+    <div class="wrap">
+      <span class="eyebrow">Locations &amp; contact</span>
+      <h1>Come eat with us</h1>
+      <p>Two locations in Techiman, plus quick ordering on WhatsApp or by phone.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <div class="grid grid-2">
+        {branches.map((b) => <BranchCard branch={b} map />)}
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--white">
+    <div class="wrap">
+      <div class="section-head center"><span class="eyebrow">Get in touch</span><h2>We'd love to hear from you</h2></div>
+      <div class="contact-grid">
+        <a class="c-card" href={whatsappLink()} target="_blank" rel="noopener">
+          <span class="c-icon wa"><Icon name="whatsapp" /></span>
+          <strong>WhatsApp</strong><span>{formatPhone(site.phones[0])}</span>
+        </a>
+        {site.phones.map((p) => (
+          <a class="c-card" href={telHref(p)}>
+            <span class="c-icon"><Icon name="phone" /></span>
+            <strong>Call</strong><span>{formatPhone(p)}</span>
+          </a>
+        ))}
+        <a class="c-card" href={`mailto:${site.email}`}>
+          <span class="c-icon"><Icon name="mail" /></span>
+          <strong>Email</strong><span class="email">{site.email}</span>
+        </a>
+        <a class="c-card" href={site.tiktok} target="_blank" rel="noopener">
+          <span class="c-icon"><Icon name="tiktok" /></span>
+          <strong>TikTok</strong><span>{site.tiktokHandle}</span>
+        </a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .contact-grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 200px), 1fr)); }
+  .c-card {
+    display: grid; justify-items: center; text-align: center; gap: 4px; padding: 24px 16px;
+    border-radius: var(--radius); background: var(--cream); border: 1px solid var(--line);
+    text-decoration: none; color: var(--ink); transition: transform .15s, box-shadow .15s;
+  }
+  .c-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+  .c-card strong { font-family: var(--font-head); color: var(--green); }
+  .c-card span { color: var(--muted); }
+  .email { word-break: break-all; }
+  .c-icon { display: grid; place-items: center; width: 52px; height: 52px; border-radius: 50%; background: var(--orange); color: #fff; margin-bottom: 8px; }
+  .c-icon.wa { background: #25d366; color: #0b2e17; }
+  .c-icon :global(svg) { width: 24px; height: 24px; }
+</style>

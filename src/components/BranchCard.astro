@@ -1,0 +1,36 @@
+---
+import Icon from './Icon.astro';
+import { site, telHref, formatPhone, type Branch } from '../data/site';
+interface Props { branch: Branch; map?: boolean }
+const { branch: b, map = false } = Astro.props;
+const mapSrc = `https://maps.google.com/maps?q=${encodeURIComponent(b.mapQuery)}&z=16&output=embed`;
+const directions = `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(b.mapQuery)}`;
+---
+<article class="card branch">
+  {map && (
+    <iframe class="map" src={mapSrc} title={`Map of G'Forge Foods ${b.name}`} loading="lazy" referrerpolicy="no-referrer-when-downgrade" />
+  )}
+  <div class="card-body">
+    <div class="head">
+      <h3>{b.name}</h3>
+      {b.isNew && <span class="badge badge--maroon">New · Opens 1 Dec</span>}
+    </div>
+    {b.note && <p class="note">{b.note}</p>}
+    <ul>
+      <li><Icon name="pin" /> {b.address}</li>
+      <li><Icon name="clock" /> {b.hours ?? 'Opening hours coming soon. Call us to check.'}</li>
+      <li><Icon name="phone" /> {site.phones.map((p, i) => <>{i > 0 && ' / '}<a href={telHref(p)}>{formatPhone(p)}</a></>)}</li>
+    </ul>
+    <a class="btn btn--outline" href={directions} target="_blank" rel="noopener">Get directions <Icon name="arrow" /></a>
+  </div>
+</article>
+
+<style>
+  .map { width: 100%; height: 260px; border: 0; display: block; background: var(--green-50); }
+  .head { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; margin-bottom: 8px; }
+  .head h3 { margin: 0; }
+  .note { color: var(--muted); }
+  ul { list-style: none; padding: 0; margin: 0 0 20px; display: grid; gap: 10px; }
+  li { display: flex; gap: 10px; align-items: flex-start; }
+  li :global(svg) { width: 20px; height: 20px; color: var(--orange); flex: none; margin-top: 2px; }
+</style>

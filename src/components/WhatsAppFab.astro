@@ -1,0 +1,26 @@
+---
+import Icon from './Icon.astro';
+import { whatsappLink } from '../data/site';
+---
+<a class="wa-fab" href={whatsappLink()} target="_blank" rel="noopener" aria-label="Order on WhatsApp">
+  <Icon name="whatsapp" /><span>Order on WhatsApp</span>
+</a>
+
+<style>
+  .wa-fab {
+    position: fixed; right: 16px; bottom: 16px; z-index: 40;
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 18px 12px 14px; border-radius: 999px;
+    background: #25d366; color: #0b2e17; text-decoration: none;
+    font-family: var(--font-head); font-weight: 700; font-size: .95rem;
+    box-shadow: 0 8px 24px rgba(0,0,0,.2);
+  }
+  .wa-fab:hover { background: #1fbd59; }
+  .wa-fab :global(svg) { width: 26px; height: 26px; }
+  @media (max-width: 767px) {
+    .wa-fab { padding: 0; width: 56px; height: 56px; justify-content: center; }
+    .wa-fab span { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+    .wa-fab :global(svg) { width: 30px; height: 30px; }
+  }
+  @media (min-width: 768px) { .wa-fab { right: 24px; bottom: 24px; } }
+</style>

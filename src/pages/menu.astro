@@ -1,0 +1,75 @@
+---
+import Base from '../layouts/Base.astro';
+import MenuCard from '../components/MenuCard.astro';
+import { categories, menu } from '../data/menu';
+---
+<Base title="Menu" description="G'Forge Foods menu: banku & tilapia, jollof & chicken, fried rice, loaded pizzas, shawarma, doughnuts, birthday cakes and sobolu in Techiman. Order on WhatsApp.">
+  <section class="page-hero">
+    <div class="wrap">
+      <span class="eyebrow">Our menu</span>
+      <h1>Made fresh, made safe, made for you</h1>
+      <p>Choose a dish and quantity, then tap <strong>Order</strong> to send it straight to us on WhatsApp.</p>
+    </div>
+  </section>
+
+  <div class="tabs-bar">
+    <div class="wrap">
+      <div class="tabs" role="tablist" aria-label="Menu categories">
+        {categories.map((c, i) => (
+          <button role="tab" id={`tab-${c.id}`} aria-controls={`panel-${c.id}`} aria-selected={i === 0 ? 'true' : 'false'} tabindex={i === 0 ? 0 : -1}>{c.label}</button>
+        ))}
+      </div>
+    </div>
+  </div>
+
+  <section class="section menu-section">
+    <div class="wrap">
+      {categories.map((c, i) => (
+        <div role="tabpanel" id={`panel-${c.id}`} aria-labelledby={`tab-${c.id}`} hidden={i !== 0}>
+          <h2 class="visually-hidden">{c.label}</h2>
+          <div class="grid grid-3">
+            {menu.filter((m) => m.category === c.id).map((item, j) => <MenuCard item={item} eager={i === 0 && j < 2} />)}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+</Base>
+
+<script>
+  const tabs = [...document.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+  const select = (t: HTMLButtonElement, focus = false) => {
+    tabs.forEach((x) => {
+      const on = x === t;
+      x.setAttribute('aria-selected', String(on));
+      x.tabIndex = on ? 0 : -1;
+      document.getElementById(x.getAttribute('aria-controls')!)!.hidden = !on;
+    });
+    if (focus) t.focus();
+    t.scrollIntoView({ block: 'nearest', inline: 'center', behavior: 'smooth' });
+    history.replaceState(null, '', '#' + t.id.replace('tab-', ''));
+  };
+  tabs.forEach((t, i) => {
+    t.addEventListener('click', () => select(t));
+    t.addEventListener('keydown', (e) => {
+      const d = e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0;
+      if (d) { e.preventDefault(); select(tabs[(i + d + tabs.length) % tabs.length], true); }
+    });
+  });
+  const fromHash = tabs.find((t) => t.id === 'tab-' + location.hash.slice(1));
+  if (fromHash) select(fromHash);
+</script>
+
+<style>
+  .tabs-bar { position: sticky; top: 68px; z-index: 30; background: var(--cream); border-bottom: 1px solid var(--line); }
+  .tabs { display: flex; gap: 8px; overflow-x: auto; padding: 12px 0; scrollbar-width: none; }
+  .tabs::-webkit-scrollbar { display: none; }
+  .tabs button {
+    flex: none; min-height: 44px; padding: 0 18px; border-radius: 999px; cursor: pointer;
+    border: 1.5px solid var(--line); background: var(--white); color: var(--ink);
+    font-family: var(--font-head); font-weight: 700; font-size: .92rem;
+  }
+  .tabs button:hover { border-color: var(--green); }
+  .tabs button[aria-selected='true'] { background: var(--green); border-color: var(--green); color: var(--white); }
+  .menu-section { padding-top: 32px; }
+</style>

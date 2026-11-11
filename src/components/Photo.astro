@@ -1,0 +1,51 @@
+---
+// Renders a client photo from src/assets/photos/<name>.(jpg|jpeg|png|webp) via astro:assets
+// (resized, WebP, lazy-loaded). Until the real photo is added, shows a branded placeholder.
+import { Image } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+
+interface Props {
+  name: string;
+  alt: string;
+  width?: number;
+  aspect?: string;
+  eager?: boolean;
+  class?: string;
+}
+const { name, alt, width = 800, aspect = '4 / 3', eager = false, class: cls } = Astro.props;
+
+const files = import.meta.glob<{ default: ImageMetadata }>('../assets/photos/*.{jpg,jpeg,png,webp,JPG,JPEG,PNG}', { eager: true });
+const match = Object.entries(files).find(([p]) => p.split('/').pop()!.replace(/\.[^.]+$/, '') === name);
+const img = match?.[1].default;
+---
+{img ? (
+  <Image
+    src={img}
+    alt={alt}
+    width={width}
+    widths={[Math.round(width / 2), width]}
+    sizes={`(max-width: 640px) 100vw, ${width}px`}
+    loading={eager ? 'eager' : 'lazy'}
+    fetchpriority={eager ? 'high' : 'auto'}
+    class:list={['photo', cls]}
+    style={`aspect-ratio:${aspect};object-fit:cover;width:100%;`}
+  />
+) : (
+  <div class:list={['photo photo--placeholder', cls]} style={`aspect-ratio:${aspect}`} role="img" aria-label={alt}>
+    <span>Photo coming soon<br /><small>{alt}</small></span>
+  </div>
+)}
+
+<style>
+  .photo--placeholder {
+    width: 100%;
+    display: grid; place-items: center; text-align: center;
+    background:
+      radial-gradient(circle at 25% 30%, rgba(255,183,3,.35), transparent 45%),
+      radial-gradient(circle at 80% 75%, rgba(232,93,4,.28), transparent 50%),
+      var(--green-50);
+    color: var(--green); font-family: var(--font-head); font-weight: 700; font-size: .85rem;
+    padding: 12px;
+  }
+  .photo--placeholder small { font-weight: 500; opacity: .75; }
+</style>

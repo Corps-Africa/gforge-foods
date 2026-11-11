@@ -1,0 +1,70 @@
+---
+import Photo from './Photo.astro';
+import Icon from './Icon.astro';
+import { site } from '../data/site';
+import type { MenuItem } from '../data/menu';
+interface Props { item: MenuItem; eager?: boolean }
+const { item, eager } = Astro.props;
+const base = `https://wa.me/${site.whatsapp}?text=`;
+const msg = (q: number) => `Hello G'Forge Foods! I'd like to order: ${q} × ${item.name}`;
+---
+<article class="card menu-card" data-name={item.name}>
+  <div class="media">
+    <Photo name={item.photo} alt={item.name} width={640} eager={eager} />
+    {item.bestSeller && <span class="badge badge--orange flag">Best seller</span>}
+  </div>
+  <div class="card-body">
+    <div class="title-row">
+      <h3>{item.name}</h3>
+      {item.price != null && <span class="price">GH₵ {item.price.toFixed(2)}</span>}
+    </div>
+    <p>{item.description}</p>
+    <div class="order">
+      <div class="qty" role="group" aria-label={`Quantity of ${item.name}`}>
+        <button type="button" class="dec" aria-label="Decrease quantity">−</button>
+        <output aria-live="polite">1</output>
+        <button type="button" class="inc" aria-label="Increase quantity">+</button>
+      </div>
+      <a class="btn btn--whatsapp wa" href={base + encodeURIComponent(msg(1))} target="_blank" rel="noopener" data-base={base}>
+        <Icon name="whatsapp" /> Order
+      </a>
+    </div>
+  </div>
+</article>
+
+<script>
+  document.querySelectorAll<HTMLElement>('.menu-card').forEach((card) => {
+    const out = card.querySelector('output')!;
+    const link = card.querySelector<HTMLAnchorElement>('a.wa')!;
+    const name = card.dataset.name!;
+    let q = 1;
+    const update = () => {
+      out.textContent = String(q);
+      link.href = link.dataset.base + encodeURIComponent(`Hello G'Forge Foods! I'd like to order: ${q} × ${name}`);
+    };
+    card.querySelector('.dec')!.addEventListener('click', () => { q = Math.max(1, q - 1); update(); });
+    card.querySelector('.inc')!.addEventListener('click', () => { q = Math.min(50, q + 1); update(); });
+  });
+</script>
+
+<style>
+  .menu-card { display: flex; flex-direction: column; }
+  .media { position: relative; }
+  .flag { position: absolute; top: 12px; left: 12px; }
+  .card-body { display: flex; flex-direction: column; flex: 1; }
+  .title-row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  .title-row h3 { margin-bottom: .35em; }
+  .price { font-family: var(--font-head); font-weight: 800; color: var(--maroon); white-space: nowrap; }
+  .card-body p { color: var(--muted); font-size: .95rem; flex: 1; }
+  .order { display: flex; gap: 10px; align-items: center; }
+  .qty {
+    display: inline-flex; align-items: center; border: 1.5px solid var(--line); border-radius: 999px; height: 48px;
+  }
+  .qty button {
+    width: 44px; height: 100%; border: 0; background: none; font-size: 1.3rem; color: var(--green); cursor: pointer;
+    border-radius: 999px;
+  }
+  .qty button:hover { background: var(--green-50); }
+  .qty output { min-width: 24px; text-align: center; font-weight: 700; }
+  .wa { flex: 1; }
+</style>

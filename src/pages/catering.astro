@@ -1,0 +1,97 @@
+---
+import Base from '../layouts/Base.astro';
+import Photo from '../components/Photo.astro';
+import Icon from '../components/Icon.astro';
+import { site, telHref, formatPhone } from '../data/site';
+const occasions = ['Birthday party', 'Office / staff lunch', 'Wedding or engagement', 'Funeral', 'Church event', 'School event', 'Other'];
+---
+<Base title="Catering & Bulk Orders" description="Catering and bulk food orders in Techiman: meals, pizzas, pastries, custom birthday cakes and drinks for parties, offices and events. Request a quote from G'Forge Foods.">
+  <section class="page-hero">
+    <div class="wrap">
+      <span class="eyebrow">Catering &amp; bulk orders</span>
+      <h1>Let us feed your event</h1>
+      <p>From office lunches to birthday parties, we prepare fresh, hygienic food for groups of every size. Tell us what you need and we'll send a quote on WhatsApp.</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap layout">
+      <form class="card card-body form" id="catering-form" novalidate>
+        <h2>Request a quote</h2>
+        <div class="field-row">
+          <div class="field"><label for="name">Your name</label><input id="name" name="name" required autocomplete="name" /></div>
+          <div class="field"><label for="phone">Phone number</label><input id="phone" name="phone" type="tel" required autocomplete="tel" inputmode="tel" /></div>
+        </div>
+        <div class="field-row">
+          <div class="field">
+            <label for="occasion">Occasion</label>
+            <select id="occasion" name="occasion">{occasions.map((o) => <option>{o}</option>)}</select>
+          </div>
+          <div class="field"><label for="date">Event date</label><input id="date" name="date" type="date" required /></div>
+        </div>
+        <div class="field-row">
+          <div class="field"><label for="guests">Number of guests</label><input id="guests" name="guests" type="number" min="1" inputmode="numeric" required /></div>
+          <div class="field"><label for="location">Event location</label><input id="location" name="location" placeholder="e.g. Techiman, Tanoso" /></div>
+        </div>
+        <div class="field">
+          <label for="details">What would you like?</label>
+          <textarea id="details" name="details" rows="4" placeholder="e.g. 50 packs of jollof & chicken, 2 large pizzas, a birthday cake and sobolu"></textarea>
+        </div>
+        <p class="error" role="alert" hidden>Please fill in your name, phone number, event date and number of guests.</p>
+        <button class="btn btn--whatsapp btn--block" type="submit"><Icon name="whatsapp" /> Send request on WhatsApp</button>
+        <p class="hint">This opens WhatsApp with your details filled in. Just tap send.</p>
+      </form>
+
+      <aside class="side">
+        <Photo name="catering" alt="G'Forge Foods catering spread" width={560} class="rounded" />
+        <h3>We cater for</h3>
+        <ul class="ticks">
+          <li>Birthdays, with custom birthday cakes</li>
+          <li>Office and staff lunches</li>
+          <li>Church, school and community events</li>
+          <li>Weddings, funerals and family gatherings</li>
+        </ul>
+        <p>Prefer to talk? Call {site.phones.map((p, i) => <>{i > 0 && ' or '}<a href={telHref(p)}>{formatPhone(p)}</a></>)}.</p>
+      </aside>
+    </div>
+  </section>
+</Base>
+
+<script>
+  import { site } from '../data/site';
+  const form = document.getElementById('catering-form') as HTMLFormElement;
+  const err = form.querySelector<HTMLElement>('.error')!;
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const d = Object.fromEntries(new FormData(form)) as Record<string, string>;
+    if (!d.name?.trim() || !d.phone?.trim() || !d.date || !d.guests) { err.hidden = false; return; }
+    err.hidden = true;
+    const msg = [
+      "Hello G'Forge Foods! I'd like a catering quote.",
+      `Name: ${d.name}`,
+      `Phone: ${d.phone}`,
+      `Occasion: ${d.occasion}`,
+      `Date: ${d.date}`,
+      `Guests: ${d.guests}`,
+      d.location && `Location: ${d.location}`,
+      d.details && `Details: ${d.details}`,
+    ].filter(Boolean).join('\n');
+    window.open(`https://wa.me/${site.whatsapp}?text=${encodeURIComponent(msg)}`, '_blank', 'noopener');
+  });
+</script>
+
+<style>
+  .layout { display: grid; gap: 32px; align-items: start; }
+  @media (min-width: 900px) { .layout { grid-template-columns: 1.4fr 1fr; gap: 48px; } }
+  .form { padding: 24px; }
+  @media (min-width: 640px) { .form { padding: 32px; } }
+  .error { color: var(--maroon); font-weight: 600; }
+  .hint { text-align: center; color: var(--muted); font-size: .88rem; margin: 12px 0 0; }
+  .side :global(.rounded) { border-radius: var(--radius); overflow: hidden; margin-bottom: 24px; }
+  .ticks { list-style: none; padding: 0; display: grid; gap: 10px; }
+  .ticks li { padding-left: 30px; position: relative; }
+  .ticks li::before {
+    content: '✓'; position: absolute; left: 0; top: 1px; width: 20px; height: 20px; border-radius: 50%;
+    background: var(--green); color: var(--gold); font-size: .75rem; display: grid; place-items: center; font-weight: 800;
+  }
+</style>
